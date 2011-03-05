@@ -1,0 +1,34 @@
+import os ;
+
+
+if [ os.name ] = MACOSX
+{
+    exe glut_test
+        :
+        simple_glut.cpp
+        ../../libs/ggrks
+        :
+        <cxxflags>-std=c++0x
+        <framework>OpenGL
+        <framework>GLUT
+        ; 
+}
+else if [ os.name ] = NT
+{
+	GCC_LIB_PATH = [ os.environ GCC_LIB_PATH ] ;
+	OCL_INCLUDE_PATH = [ os.environ CUDA_INC_PATH ] ;
+
+	lib opencl : : 
+		<link>shared
+		<file>$(GCC_LIB_PATH)/libopencl.a
+		;
+
+    exe minclc
+        : 
+        minclc.cpp
+		opencl
+		:
+		<cxxflags>"-std=c++0x -msse -msse2 -msse3 -o3 -g"
+		<include>$(OCL_INCLUDE_PATH)
+		;
+}
